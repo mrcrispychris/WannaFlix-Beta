@@ -1,96 +1,138 @@
 <p align="center">
-  <img src="https://clash.md/brand/clash-app-icon.png" width="128" height="128" alt="Clash">
+  <img src="logo.png" alt="WannaFlix VPN" width="180">
 </p>
 
-# Clash
+<h1 align="center">WannaFlix Beta</h1>
 
-English · [简体中文](README.zh-CN.md)
+<p align="center">
+  Public beta builds of <strong>WannaFlix VPN</strong><br>
+  for customer testing before wider release.
+</p>
 
-[![Website](https://img.shields.io/badge/Website-Official-2563EB)](https://clash.md/)
-[![App Store Download](https://img.shields.io/badge/App_Store-Download-black?logo=apple&logoColor=white)](https://apps.apple.com/app/id6794257189)
-[![Telegram Channel](https://img.shields.io/badge/Telegram-Channel-26A5E4?logo=telegram&logoColor=white)](https://t.me/clashbyclash)
-[![Telegram Group](https://img.shields.io/badge/Telegram-Group-26A5E4?logo=telegram&logoColor=white)](https://t.me/+t__WNRvjUbk3M2Nl)
+<p align="center">
+  <img alt="Beta" src="https://img.shields.io/badge/Status-Public%20Beta-c41e3a?style=for-the-badge">
+</p>
 
-**A native, rule-based proxy client for iPhone, iPad, Mac and Apple TV, powered by the [Clash core](https://github.com/ProjectClash/Clash).**
+---
 
-Use the App Store link to install the official app. The build notes below apply after the source and dependencies have been migrated.
+## What is WannaFlix VPN?
 
-## Repository migration status
+**WannaFlix VPN** is a multi-platform VPN client. Sign in with your WannaFlix access token, download the server list, and connect through the app on Android, Windows, and macOS.
 
-This is the new client repository under **Project Clash**. This first publication contains the English and Chinese READMEs. Client source, extensions, resources, dependency locks, build scripts and license files will follow.
+This repository does **not** contain application source code. It exists so we can publish **public beta installers** and collect feedback from customers who want to try new builds early.
 
-The build notes use the Clash project paths and scheme names planned for the source migration. They apply after that rename is complete and the source and dependencies are available here.
+### Relationship to FlClash
 
-## About this repository
+WannaFlix VPN is a modified version of [FlClash](https://github.com/chen08209/FlClash), an open-source multi-platform proxy client based on Clash.Meta (mihomo), licensed under **GPL-3.0**.
 
-The source to be migrated includes the Apple applications, their extensions, shared libraries and resources needed to build them. The [Clash core](https://github.com/ProjectClash/Clash) has its own repository. Kernel and Adapter source locations and pinned revisions will be recorded in `Dependencies.lock.json` with the source publication.
+Original FlClash copyright notices are retained. The FlClash authors do **not** publish WannaFlix builds and are not responsible for this product.
 
-| Directory | Contents |
+---
+
+## Getting a beta build
+
+1. Open the **Releases** page on this GitHub repository.
+2. Download the installer for your platform from the latest (or a specific) beta tag.
+3. Install or replace your current WannaFlix build with the beta package.
+4. Sign in with your usual WannaFlix access token.
+
+Typical artifacts (names vary by version):
+
+| Platform | What to download |
 | --- | --- |
-| `apple/ClashClient` | Platform applications, extensions and XcodeGen project specification |
-| `apple/ClashClientKit` | Shared configuration and profile models |
-| `apple/ClashClientUI` | Shared interface components |
-| `apple/ClashMacClient` | macOS components |
+| **Android** | `WannaFlix-*-android-arm64-v8a.apk` (most phones) |
+| **Windows (x64)** | `WannaFlix-*-windows-amd64-setup.exe` |
+| **Windows (ARM64)** | `WannaFlix-*-windows-arm64-setup.exe` |
+| **macOS (Apple Silicon)** | `WannaFlix-*-macos-arm64.dmg` |
 
-The existing source distribution is pre-release. The App Store app version and a source checkout are separate artifacts; once the source is available here, pin a revision when reproducing a build.
+Always prefer the file that matches your device architecture. When in doubt on Android phones, use **arm64-v8a**.
 
-The iOS and macOS projects wrap the static Core in a shared framework, with the required header-copy build step included in project generation. Available features depend on the pinned Kernel and Adapter revisions; the iOS/tvOS SDK does not include EasyTier.
+> **Note:** Beta builds may be unsigned or signed differently from production. On Android you may need to allow installs from unknown sources. On Windows or macOS you may need to approve a security prompt the first time you open the app.
 
-## Build from source (after source and dependency migration)
+---
 
-### Requirements
+## Beta testing guidelines
 
-- macOS with Xcode 27.0 and the iOS, macOS and tvOS SDKs.
-- XcodeGen and Git available on your command path.
-- Go with automatic toolchain selection enabled, or the Go 1.26.6 toolchain selected by the pinned kernel's binding module.
-- Python 3 with PyYAML.
+Thank you for helping improve WannaFlix. Useful feedback is specific, reproducible, and tied to a build version.
 
-### Prepare the project
+### Before you start
 
-```sh
-git clone https://github.com/ProjectClash/Clash-Client.git
-cd Clash-Client
-python3 -m venv .build/python-env
-source .build/python-env/bin/activate
-python3 -m pip install PyYAML
-python3 scripts/bootstrap.py
-python3 scripts/configure.py
-```
+- Note the **exact release tag** or file name you installed (for example `WannaFlix-0.1.02-…`).
+- Write down your **OS version** (Android / Windows / macOS) and device type.
+- If possible, test on a device you can reset or where a broken VPN setup will not block critical work.
 
-The first bootstrap fetches the pinned public Kernel and Adapter sources, installs the pinned gomobile tools and builds the five-slice SDK. It requires network access and can take several minutes. The configure step generates the Xcode project.
+### What to try
 
-Open `apple/ClashClient/ClashClient.xcodeproj` and choose a scheme:
+- First launch and sign-in with your access token
+- Connecting, disconnecting, and reconnecting
+- Switching servers or modes (if available in the build)
+- App behavior after sleep, reboot, or network changes (Wi‑Fi ↔ cellular)
+- Upgrade from a previous beta or stable build, when applicable
 
-| Platform | Scheme |
-| --- | --- |
-| iPhone / iPad | `ClashClient` |
-| Apple TV | `ClashTV` |
-| Mac | `ClashMac` |
+### What to report
 
-For an unsigned iOS Simulator build:
+Please report problems in this repository’s **Issues** tab (or the channel your WannaFlix contact specified), and include:
 
-```sh
-xcodebuild -project apple/ClashClient/ClashClient.xcodeproj \
-  -scheme ClashClient -configuration Release \
-  -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
-```
+1. **Build** — release tag or exact installer / APK file name  
+2. **Device** — OS, version, and architecture (e.g. Windows 11 ARM64, Android 14 arm64)  
+3. **Steps** — what you did, in order  
+4. **Expected vs actual** — what should have happened, what happened instead  
+5. **Screenshots or short screen recordings** when the UI is involved  
+6. **Relevant logs** if you can capture them (see below)  
+7. **Workarounds** you already tried (reinstall, new token, reboot, etc.)
 
-### Sign your own build
+### Good bug titles
 
-Set your own bundle identifier family and Apple Developer Team ID:
+- `Windows ARM64: app crashes when enabling TUN after sleep`
+- `Android: sign-in accepts token but server list stays empty`
+- `macOS: DMG opens but app is blocked on first launch`
 
-```sh
-python3 scripts/configure.py --bundle-base org.yourname.clash --team YOURTEAMID
-```
+Avoid vague titles like “doesn’t work” or “bug”.
 
-Configure signing and capabilities for the app and its extensions in Xcode, including Network Extensions, App Groups and any iCloud capabilities you use. Certificates and provisioning profiles are not included. An unsigned build checks compilation; installing on a device requires your own signing setup.
+### Regression and change notes
 
-## Feedback
+If something worked in an earlier beta and failed after updating:
 
-Report app problems in [Issues](https://github.com/ProjectClash/Clash-Client/issues). Include the platform and OS version, app version or source revision, reproduction steps, and expected versus actual behavior. Share only the configuration and logs needed to reproduce the problem, with credentials and subscription links removed.
+- Name **both** versions (old → new)
+- Say whether a clean install vs upgrade made a difference
+- Mention any setting you changed between builds
 
-Kernel issues can be reported in [Clash core Issues](https://github.com/ProjectClash/Clash/issues). Packet bridge and provider lifecycle issues can be reported in this client repository during the migration.
+Positive notes are welcome too: “connects faster on Wi‑Fi than 0.1.01” helps as much as a crash report.
 
-## License
+### Logs and privacy
 
-The project source uses [GPL-3.0](https://www.gnu.org/licenses/gpl-3.0.html). License files and third-party resource notices will accompany the source migration.
+- Prefer logs from the session where the problem occurred.
+- **Do not** paste your WannaFlix access token, passwords, or other account secrets into a public issue.
+- Redact personal identifiers from screenshots when possible.
+
+---
+
+## Known expectations for beta software
+
+- Features and UI may change between betas without a long migration path.
+- A beta can be less stable than the build you use day to day.
+- We may yank or replace a release if a serious issue is found.
+- Feedback may be grouped; not every report will get an individual reply, but it is reviewed.
+
+If a beta leaves you unable to connect, install the previous release from **Releases** or your last known-good package until a fix is published.
+
+---
+
+## Support and community
+
+- **Beta downloads:** the **Releases** page on this repository
+- **Bug reports / feedback:** the **Issues** tab on this repository
+- **WannaFlix Telegram:** [Join the channel](https://telegram.me/+8_vEJYAkTXlhYzA1)
+
+For account or subscription questions that are not about a beta build, contact WannaFlix support through your usual channel rather than filing a GitHub issue.
+
+---
+
+## License and attribution
+
+WannaFlix VPN builds distributed here are based on FlClash and related open-source components.
+
+- FlClash: [github.com/chen08209/FlClash](https://github.com/chen08209/FlClash) (GPL-3.0)
+- Clash.Meta / mihomo and other third-party components follow their own licenses
+
+This repository is for **beta distribution and feedback** only. Source for the modified application is provided separately under the applicable open-source licenses where required.
